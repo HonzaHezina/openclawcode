@@ -3,13 +3,12 @@ FROM ${OPENCODE_BASE}
 
 USER root
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apk add --no-cache \
     bash \
     ca-certificates \
     curl \
     dumb-init \
-    rsync \
-    && rm -rf /var/lib/apt/lists/*
+    rsync
 
 WORKDIR /opt/opencode-stack
 
