@@ -24,7 +24,8 @@ COPY images/openclaw/run-openclaw.sh /opt/openclaw-stack/run-openclaw.sh
 COPY bootstrap /opt/openclaw-stack/bootstrap
 
 RUN chmod +x /opt/openclaw-stack/entrypoint.sh /opt/openclaw-stack/run-openclaw.sh \
-    && find /opt/openclaw-stack/bootstrap/system/scripts -type f -name "*.sh" -exec chmod +x {} \;
+    && find /opt/openclaw-stack/bootstrap/system/scripts -type f -name "*.sh" -exec chmod +x {} \; \
+    && find /opt/openclaw-stack/bootstrap/openclaw -type f -name "*.sh" -exec chmod +x {} \;
 
 VOLUME ["/data"]
 EXPOSE 18789

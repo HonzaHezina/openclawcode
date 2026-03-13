@@ -39,7 +39,7 @@ services:
       browser:
         condition: service_healthy
       opencode:
-        condition: service_healthy
+        condition: service_started
     expose:
       - "18789"
     healthcheck:
@@ -89,6 +89,7 @@ services:
       - GEMINI_API_KEY=${GEMINI_API_KEY:-}
     volumes:
       - openclaw-data:/data
+      - opencode-config:/root/.config/opencode
       - opencode-data:/root/.local/share/opencode
       - opencode-cache:/root/.cache/opencode
     expose:
@@ -103,5 +104,6 @@ services:
 volumes:
   openclaw-data: {}
   browser-data: {}
+  opencode-config: {}
   opencode-data: {}
   opencode-cache: {}
