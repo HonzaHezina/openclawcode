@@ -33,7 +33,7 @@ mkdir -p \
   "$DATA_DIR/backups" \
   "$DATA_DIR/repos"
 
-if [ ! -e "$OPENCLAW_CONFIG_PATH" ]; then
+if [ ! -s "$OPENCLAW_CONFIG_PATH" ]; then
   mkdir -p "$(dirname "$OPENCLAW_CONFIG_PATH")"
   "$BOOTSTRAP_DIR/openclaw/render-openclaw-config.sh" > "$OPENCLAW_CONFIG_PATH"
 fi
