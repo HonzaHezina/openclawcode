@@ -121,8 +121,5 @@ fi
 
 cat <<JSON
 
-  meta: {
-    profile: "coolify-split-stack-autonomy",
-  },
 }
 JSON
