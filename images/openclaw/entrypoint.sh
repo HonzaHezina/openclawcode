@@ -47,8 +47,14 @@ chmod +x "$DATA_DIR/system/scripts/"*.sh || true
 
 export OPENCLAW_CONFIG_PATH
 if ! openclaw config validate >/tmp/openclaw-config-check.log 2>&1; then
+  echo "[entrypoint] config invalid, re-rendering..." >&2
   cat /tmp/openclaw-config-check.log >&2 || true
-  exit 1
+  rm -f "$OPENCLAW_CONFIG_PATH"
+  "$BOOTSTRAP_DIR/openclaw/render-openclaw-config.sh" > "$OPENCLAW_CONFIG_PATH"
+  if ! openclaw config validate >/tmp/openclaw-config-check2.log 2>&1; then
+    cat /tmp/openclaw-config-check2.log >&2 || true
+    exit 1
+  fi
 fi
 
 touch "$DATA_DIR/.bootstrap-seeded-openclaw"
