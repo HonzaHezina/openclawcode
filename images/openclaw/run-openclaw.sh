@@ -12,7 +12,7 @@ mkdir -p "${OPENCLAW_STATE_DIR}" "/data/logs"
 
 echo "[startup] waiting for OpenCode at ${OPENCODE_BASE_URL}/global/health" | tee -a /data/logs/openclaw-startup.log
 for _ in $(seq 1 30); do
-  if curl -sf "${OPENCODE_BASE_URL}/global/health" >/dev/null 2>&1; then
+  if curl -sf -u "${OPENCODE_SERVER_USERNAME:-opencode}:${OPENCODE_SERVER_PASSWORD:-}" "${OPENCODE_BASE_URL}/global/health" >/dev/null 2>&1; then
     echo "[startup] OpenCode is reachable" | tee -a /data/logs/openclaw-startup.log
     break
   fi
