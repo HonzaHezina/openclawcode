@@ -1,0 +1,106 @@
+services:
+  openclaw:
+    build:
+      context: .
+      dockerfile: ./images/openclaw/Dockerfile
+      args:
+        OPENCLAW_BASE: ${OPENCLAW_BASE:-coollabsio/openclaw:latest}
+    restart: unless-stopped
+    environment:
+      - SERVICE_FQDN_OPENCLAW_18789=${SERVICE_FQDN_OPENCLAW_18789:-}
+      - OPENCLAW_GATEWAY_TOKEN=${OPENCLAW_GATEWAY_TOKEN:?set_in_coolify}
+      - OPENCLAW_MODEL_PRIMARY=${OPENCLAW_MODEL_PRIMARY:?set_in_coolify}
+      - OPENCLAW_GATEWAY_BIND=lan
+      - OPENCLAW_GATEWAY_PORT=18789
+      - OPENCLAW_CONFIG_PATH=/data/openclaw.json
+      - OPENCLAW_STATE_DIR=/data/.openclaw
+      - OPENCLAW_WORKSPACE_DIR=/data/workspaces
+      - BROWSER_CDP_URL=http://browser:9222
+      - OPENCODE_BASE_URL=http://opencode:4096
+      - OPENCODE_SERVER_USERNAME=${OPENCODE_SERVER_USERNAME:-opencode}
+      - OPENCODE_SERVER_PASSWORD=${OPENCODE_SERVER_PASSWORD:?set_in_coolify}
+      - OPENCODE_ATTACH_URL=http://${OPENCODE_SERVER_USERNAME:-opencode}:${OPENCODE_SERVER_PASSWORD:?set_in_coolify}@opencode:4096
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY:-}
+      - MISTRAL_API_KEY=${MISTRAL_API_KEY:-}
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN:-}
+      - TELEGRAM_OWNER_ID=${TELEGRAM_OWNER_ID:-}
+      - TELEGRAM_DM_POLICY=${TELEGRAM_DM_POLICY:-}
+      - TELEGRAM_GROUP_REQUIRE_MENTION=${TELEGRAM_GROUP_REQUIRE_MENTION:-true}
+      - OPENCLAW_HEARTBEAT_EVERY=${OPENCLAW_HEARTBEAT_EVERY:-30m}
+      - OPENCLAW_HEARTBEAT_TARGET=${OPENCLAW_HEARTBEAT_TARGET:-last}
+      - OPENCLAW_ENABLE_DEFAULT_AUTONOMY=${OPENCLAW_ENABLE_DEFAULT_AUTONOMY:-true}
+      - OPENCLAW_AUTONOMY_TIMEZONE=${OPENCLAW_AUTONOMY_TIMEZONE:-Europe/Prague}
+    volumes:
+      - openclaw-data:/data
+    depends_on:
+      browser:
+        condition: service_healthy
+      opencode:
+        condition: service_healthy
+    expose:
+      - "18789"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://127.0.0.1:18789/healthz >/dev/null || exit 1"]
+      interval: 10s
+      timeout: 10s
+      retries: 12
+
+  browser:
+    image: coollabsio/openclaw-browser:latest
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+      - CHROME_CLI=--remote-debugging-port=9222 --remote-debugging-address=0.0.0.0 --remote-allow-origins=*
+    volumes:
+      - browser-data:/config
+    shm_size: 2g
+    expose:
+      - "9222"
+    healthcheck:
+      test: ["CMD-SHELL", "bash -lc ':> /dev/tcp/127.0.0.1/9222' || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  opencode:
+    build:
+      context: .
+      dockerfile: ./images/opencode/Dockerfile
+      args:
+        OPENCODE_BASE: ${OPENCODE_BASE:-ghcr.io/anomalyco/opencode:latest}
+    restart: unless-stopped
+    working_dir: /data/workspaces/dev
+    environment:
+      - SERVICE_FQDN_OPENCODE_4096=${SERVICE_FQDN_OPENCODE_4096:-}
+      - OPENCODE_SERVER_USERNAME=${OPENCODE_SERVER_USERNAME:-opencode}
+      - OPENCODE_SERVER_PASSWORD=${OPENCODE_SERVER_PASSWORD:?set_in_coolify}
+      - OPENCODE_CONFIG_DIR=/data/opencode
+      - OPENCODE_CONFIG=/data/opencode/opencode.jsonc
+      - OPENCODE_MODEL=${OPENCODE_MODEL:?set_in_coolify}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY:-}
+      - MISTRAL_API_KEY=${MISTRAL_API_KEY:-}
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+    volumes:
+      - openclaw-data:/data
+      - opencode-data:/root/.local/share/opencode
+      - opencode-cache:/root/.cache/opencode
+    expose:
+      - "4096"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://127.0.0.1:4096/global/health >/dev/null || exit 1"]
+      interval: 10s
+      timeout: 10s
+      retries: 12
+
+volumes:
+  openclaw-data: {}
+  browser-data: {}
+  opencode-data: {}
+  opencode-cache: {}

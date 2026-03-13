@@ -1,0 +1,61 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+
+  "model": "{env:OPENCODE_MODEL}",
+  "autoupdate": false,
+
+  "server": {
+    "port": 4096,
+    "hostname": "0.0.0.0"
+  },
+
+  "default_agent": "openclaw-improver",
+
+  "provider": {
+    "openai": {
+      "options": {
+        "apiKey": "{env:OPENAI_API_KEY}"
+      }
+    },
+
+    "anthropic": {
+      "options": {
+        "apiKey": "{env:ANTHROPIC_API_KEY}"
+      }
+    },
+
+    "openrouter": {
+      "options": {
+        "apiKey": "{env:OPENROUTER_API_KEY}"
+      }
+    },
+
+    "mistral": {
+      "options": {
+        "apiKey": "{env:MISTRAL_API_KEY}"
+      }
+    },
+
+    "gemini": {
+      "options": {
+        "apiKey": "{env:GEMINI_API_KEY}"
+      }
+    }
+  },
+
+  "permission": {
+    "edit": "ask",
+    "webfetch": "allow",
+    "bash": {
+      "*": "ask",
+      "pwd": "allow",
+      "ls *": "allow",
+      "find *": "allow",
+      "grep *": "allow",
+      "cat *": "allow",
+      "git status *": "allow",
+      "git diff *": "allow",
+      "diff *": "allow"
+    }
+  }
+}

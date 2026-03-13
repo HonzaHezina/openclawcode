@@ -1,0 +1,9 @@
+// Reference config snapshot. The real /data/openclaw.json is rendered on first boot
+// by bootstrap/openclaw/render-openclaw-config.sh so Telegram can be enabled only
+// when TELEGRAM_BOT_TOKEN is present.
+{
+  meta: {
+    profile: "coolify-split-stack-autonomy",
+    note: "Rendered on first boot",
+  },
+}
