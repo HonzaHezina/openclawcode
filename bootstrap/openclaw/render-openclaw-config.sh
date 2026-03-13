@@ -24,7 +24,7 @@ cat <<JSON
     bind: "${OPENCLAW_GATEWAY_BIND:-lan}",
     auth: {
       mode: "token",
-      token: "${OPENCLAW_GATEWAY_TOKEN:-change-me}",
+      token: "${OPENCLAW_GATEWAY_TOKEN}",
     },
   },
 
