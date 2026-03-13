@@ -1,5 +1,6 @@
 ./MANIFEST.txt
 ./README.md
+./bootstrap/docs/.gitkeep
 ./bootstrap/openclaw/openclaw.json
 ./bootstrap/openclaw/render-openclaw-config.sh
 ./bootstrap/opencode/agents/change-reviewer.md

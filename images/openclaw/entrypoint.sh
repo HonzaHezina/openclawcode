@@ -40,7 +40,7 @@ fi
 
 seed_dir "$BOOTSTRAP_DIR/workspaces" "$DATA_DIR/workspaces"
 seed_dir "$BOOTSTRAP_DIR/system" "$DATA_DIR/system"
-seed_dir "$BOOTSTRAP_DIR/docs" "$DATA_DIR/docs"
+[ -d "$BOOTSTRAP_DIR/docs" ] && seed_dir "$BOOTSTRAP_DIR/docs" "$DATA_DIR/docs"
 seed_dir "$BOOTSTRAP_DIR/opencode" "$DATA_DIR/opencode"
 
 chmod +x "$DATA_DIR/system/scripts/"*.sh || true
